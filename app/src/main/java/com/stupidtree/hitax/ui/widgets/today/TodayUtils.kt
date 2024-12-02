@@ -39,7 +39,7 @@ object TodayUtils {
 
     fun setUpOneWidget(
         context: Context,
-        events: List<EventItem>,
+        todayStatus: Int,
         appWidgetManager: AppWidgetManager,
         appWidgetId: Int,
         slim: Boolean
@@ -101,29 +101,36 @@ object TodayUtils {
         val serviceIntent = Intent(context, ListWidgetService::class.java)
         serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
         serviceIntent.putExtra("slim", slim)
+        serviceIntent.putExtra("is_today", todayStatus != 3)
         serviceIntent.data = Uri.parse(serviceIntent.toUri(Intent.URI_INTENT_SCHEME))
         views.setRemoteAdapter(R.id.list, serviceIntent)
-        if (events.isEmpty()) {
+        if (todayStatus == 1 || todayStatus == 2) {
             views.setTextViewText(
                 R.id.loading,
-                context.getString(R.string.timeline_head_free_title)
+                if (todayStatus == 1) context.getString(R.string.timeline_head_free_title) else context.getString(R.string.timeline_head_free2_title)
             )
             views.setViewVisibility(R.id.list, View.GONE)
             views.setViewVisibility(R.id.loading_icon, View.VISIBLE)
             views.setViewVisibility(R.id.place_holder, View.VISIBLE)
         } else {
+            if (todayStatus == 3) {
+                views.setTextViewText(R.id.tv_title, context.getString(R.string.timeline_head_tomorrow_title))
+            }
             views.setViewVisibility(R.id.place_holder, View.GONE)
             views.setViewVisibility(R.id.list, View.VISIBLE)
         }
-        if (events.isEmpty()) {
+        if (todayStatus == 1 || todayStatus == 2) {
             views.setViewVisibility(R.id.list, View.GONE)
             views.setViewVisibility(R.id.place_holder, View.VISIBLE)
             views.setTextViewText(
                 R.id.loading,
-                context.getString(R.string.timeline_head_free_title)
+                if (todayStatus == 1) context.getString(R.string.timeline_head_free_title) else context.getString(R.string.timeline_head_free2_title)
             )
             views.setViewVisibility(R.id.loading_icon, View.VISIBLE)
         } else {
+            if (todayStatus == 3) {
+                views.setTextViewText(R.id.tv_title, context.getString(R.string.timeline_head_tomorrow_title))
+            }
             views.setViewVisibility(R.id.list, View.VISIBLE)
             views.setViewVisibility(R.id.place_holder, View.GONE)
         }

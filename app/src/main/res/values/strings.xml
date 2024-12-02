@@ -28,6 +28,8 @@
 
 
     <string name="timeline_head_free_title">今日空闲</string>
+    <string name="timeline_head_free2_title">今日课已结束</string>
+    <string name="timeline_head_tomorrow_title">明日课程预告</string>
     <string name="timeline_head_free_subtitle">享受当下！</string>
     <string name="timeline_head_goodnight_title">夜深了</string>
     <string name="timeline_head_goodnight_subtitle">晚安！</string>

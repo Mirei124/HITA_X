@@ -12,6 +12,8 @@ import com.stupidtree.hitax.ui.widgets.WidgetUtils.EVENT_REFRESH
 import com.stupidtree.hitax.ui.widgets.today.TodayUtils.goAsync
 import com.stupidtree.hitax.ui.widgets.today.TodayUtils.setUpOneWidget
 import kotlinx.coroutines.DelicateCoroutinesApi
+import java.sql.Timestamp
+import java.util.Calendar
 
 /**
  * Implementation of App Widget functionality.
@@ -31,10 +33,10 @@ class TodayWidget : AppWidgetProvider() {
         val timetableRepo =
             TimetableRepository.getInstance(context.applicationContext as Application)
         goAsync{
-            val events = timetableRepo.getTodayEventsSync()
+            val todayStauts = this.todayStatus(timetableRepo)
             for (appWidgetId in appWidgetIds) {
                 Log.e("WI", "UPDATE:$appWidgetId")
-                setUpOneWidget(context, events, appWidgetManager, appWidgetId,false)
+                setUpOneWidget(context, todayStauts, appWidgetManager, appWidgetId,false)
             }
         }
         super.onUpdate(context, appWidgetManager, appWidgetIds)
@@ -56,10 +58,10 @@ class TodayWidget : AppWidgetProvider() {
                 val timetableRepo =
                     TimetableRepository.getInstance(context.applicationContext as Application)
                 goAsync {
-                    val events = timetableRepo.getTodayEventsSync()
+                    val todayStatus = this.todayStatus(timetableRepo)
                     for (appWidgetId in mgr.getAppWidgetIds(cn)) {
                         Log.e("WI", "refressh$appWidgetId")
-                        setUpOneWidget(context, events, mgr, appWidgetId,false)
+                        setUpOneWidget(context, todayStatus, mgr, appWidgetId,false)
                     }
                 }
 
@@ -77,6 +79,28 @@ class TodayWidget : AppWidgetProvider() {
         super.onDisabled(context)
     }
 
-
+    fun todayStatus(timetableRepository: TimetableRepository): Int {
+        val events = timetableRepository.getTodayEventsSync()
+        if (!events.isEmpty()) {
+            var maxTimestamp = events[0].to
+            for (event in events) {
+                maxTimestamp = if (maxTimestamp > event.to) maxTimestamp else event.to
+            }
+            val now = Timestamp(Calendar.getInstance().timeInMillis)
+            if (maxTimestamp > now) {
+                return 0
+            }
+        }
+        val tomorrow = timetableRepository.getTomorrowEventsSync()
+        if (tomorrow.isEmpty()) {
+            if (events.isEmpty()) {
+                return 1
+            } else {
+                return 2
+            }
+        } else {
+            return 3
+        }
+    }
 }
 

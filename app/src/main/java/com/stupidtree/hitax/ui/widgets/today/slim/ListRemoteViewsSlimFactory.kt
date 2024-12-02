@@ -21,6 +21,8 @@ internal class ListRemoteViewsSlimFactory(val mContext: Context, intent: Intent)
         AppWidgetManager.INVALID_APPWIDGET_ID
     )
     private val mBeans = mutableListOf<EventItem>()
+    private val isToday = intent.getBooleanExtra("is_today", true)
+
     override fun getViewAt(position: Int): RemoteViews {
         // 获取 item_widget_device.xml 对应的RemoteViews
         val rv = RemoteViews(mContext.packageName, R.layout.widget_today_item_slim)
@@ -62,7 +64,11 @@ internal class ListRemoteViewsSlimFactory(val mContext: Context, intent: Intent)
     override fun onDataSetChanged() {
         val timetableRepo =
             TimetableRepository.getInstance(mContext.applicationContext as Application)
-        val events = timetableRepo.getTodayEventsSync()
+        val events = if (this.isToday) {
+            timetableRepo.getTodayEventsSync()
+        } else {
+            timetableRepo.getTomorrowEventsSync()
+        }
         mBeans.clear()
         mBeans.addAll(events)
     }

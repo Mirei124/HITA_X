@@ -71,6 +71,22 @@ class TimetableRepository(val application: Application) {
         val to = now.timeInMillis
         return eventItemDao.getEventsDuringSync(from, to)
     }
+
+    /**
+     * 获取明日事件
+     */
+    @WorkerThread
+    fun getTomorrowEventsSync(): List<EventItem> {
+        val now = Calendar.getInstance()
+        now.set(Calendar.HOUR_OF_DAY,0)
+        now.set(Calendar.MINUTE,0)
+        now.add(Calendar.DATE,1)
+        val from = now.timeInMillis
+        now.add(Calendar.DATE,1)
+        val to = now.timeInMillis
+        return eventItemDao.getEventsDuringSync(from, to)
+    }
+
     /**
      * 获取[from,to)内的事件，包含颜色
      */
