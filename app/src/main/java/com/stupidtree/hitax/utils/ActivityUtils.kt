@@ -12,6 +12,7 @@ import androidx.core.app.ActivityOptionsCompat
 import com.stupidtree.hita.theta.ThetaActivity
 import com.stupidtree.hitax.R
 import com.stupidtree.hitax.data.repository.EASRepository
+import com.stupidtree.hitax.ui.eas.login.LoginWebViewActivity
 import com.stupidtree.hitax.ui.eas.login.PopUpLoginEAS
 import com.stupidtree.hitax.ui.myprofile.MyProfileActivity
 import com.stupidtree.hitax.ui.news.NewsDetailActivity
@@ -94,10 +95,9 @@ object ActivityUtils {
                     return
                 }
             }
-            val window = PopUpLoginEAS()
-            window.lock = lock
-            window.onResponseListener = onResponseListener
-            window.show(from.supportFragmentManager, "verify")
+            val intent = Intent(from, LoginWebViewActivity::class.java)
+            from.startActivity(intent)
+            return
         }
     }
 
