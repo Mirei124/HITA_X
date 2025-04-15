@@ -4,11 +4,10 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.res.ColorStateList
 import android.view.View
-import com.bumptech.glide.Glide
+import android.webkit.CookieManager
 import com.stupidtree.hitax.R
 import com.stupidtree.hitax.data.repository.EASRepository
 import com.stupidtree.hitax.databinding.FragmentNavigationBinding
-import com.stupidtree.style.base.BaseFragment
 import com.stupidtree.hitax.ui.eas.classroom.EmptyClassroomActivity
 import com.stupidtree.hitax.ui.eas.exam.ExamActivity
 import com.stupidtree.hitax.ui.eas.imp.ImportTimetableActivity
@@ -18,6 +17,7 @@ import com.stupidtree.hitax.ui.news.lecture.ActivityLecture
 import com.stupidtree.hitax.utils.ActivityUtils
 import com.stupidtree.hitax.utils.ImageUtils
 import com.stupidtree.stupiduser.data.repository.LocalUserRepository
+import com.stupidtree.style.base.BaseFragment
 import com.stupidtree.style.widgets.PopUpText
 
 class NavigationFragment : BaseFragment<NavigationViewModel, FragmentNavigationBinding>() {
@@ -210,6 +210,9 @@ class NavigationFragment : BaseFragment<NavigationViewModel, FragmentNavigationB
                         override fun OnConfirm() {
                             activity?.application?.let {
                                 EASRepository.getInstance(it).logout()
+                                val cookieManager = CookieManager.getInstance()
+                                cookieManager.removeAllCookies {}
+                                cookieManager.flush()
                                 refreshEasState()
                             }
                         }

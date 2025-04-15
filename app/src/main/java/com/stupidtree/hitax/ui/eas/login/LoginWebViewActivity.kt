@@ -31,9 +31,6 @@ class LoginWebViewActivity : AppCompatActivity() {
         webView.settings.domStorageEnabled = true
         webView.settings.setSupportZoom(true)
         webView.webViewClient = LoginWebViewClient(this)
-        val cookieManager = CookieManager.getInstance()
-        cookieManager.removeAllCookies {}
-        cookieManager.flush()
 
         webView.loadUrl("http://jw.hitsz.edu.cn/cas")
     }
